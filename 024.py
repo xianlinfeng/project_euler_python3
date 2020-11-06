@@ -1,3 +1,5 @@
+import itertools
+
 
 def next(nums):
     for i in range(len(nums)-1, 0, -1):
@@ -10,6 +12,13 @@ def next(nums):
         else:
             pass
     return None
+
+
+def compute():
+    """ method 2 """
+    arr = list(range(10))
+    temp = itertools.islice(itertools.permutations(arr), 999999, None)
+    return "".join(str(x) for x in next(temp))
 
 
 if __name__ == "__main__":
