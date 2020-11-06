@@ -1,6 +1,19 @@
 import math
 
 
+def next(nums):
+    for i in range(len(nums)-1, 0, -1):
+        if nums[i-1] < nums[i]:
+            _, j = min((v, j)
+                       for (j, v) in enumerate(nums[i:]) if v > nums[i-1])
+            nums[i-1], nums[i+j] = nums[i+j], nums[i-1]
+            nums[i:] = sorted(nums[i:])
+            return nums
+        else:
+            pass
+    return None
+
+
 def isPalindromic(n):
     """
     A palindromic number reads the same both ways. such as 9009
