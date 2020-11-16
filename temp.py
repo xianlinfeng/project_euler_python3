@@ -1,73 +1,74 @@
 
-import eulerlib
+l3 = list(filter(lambda x: 1000 <= x <= 9999, list(int(n * (n + 1)/2)
+                                                   for n in range(9999))))
+
+l4 = list(filter(lambda x: 1000 <= x <= 9999, list(int(n*n)
+                                                   for n in range(9999))))
+
+l5 = list(filter(lambda x: 1000 <= x <= 9999, list(int(n * (3 * n - 1)/2)
+                                                   for n in range(9999))))
+
+l6 = list(filter(lambda x: 1000 <= x <= 9999, list(n*(2*n - 1)
+                                                   for n in range(9999))))
+
+l7 = list(filter(lambda x: 1000 <= x <= 9999, list(int(n*(5*n-3)/2)
+                                                   for n in range(9999))))
+
+l8 = list(filter(lambda x: 1000 <= x <= 9999, list(n*(3*n - 2)
+                                                   for n in range(9999))))
 
 
-def compute():
-    PRIME_LIMIT = 100000  # Arbitrary initial cutoff
-    primes = eulerlib.list_primes(PRIME_LIMIT)
-
-    # Tries to find any suitable set and return its sum, or None if none is found.
-    # A set is suitable if it contains only primes, its size is targetsize,
-    # its sum is less than or equal to sumlimit, and each pair concatenates to a prime.
-    # 'prefix' is an array of ascending indices into the 'primes' array,
-    # which describes the set found so far.
-    # The function blindly assumes that each pair of primes in 'prefix' concatenates to a prime.
-    #
-    # For example, find_set_sum([1, 3, 28], 5, 10000) means "find the sum of any set
-    # where the set has size 5, consists of primes with the lowest elements being [3, 7, 109],
-    # has sum 10000 or less, and has each pair concatenating to form a prime".
-
-    def find_set_sum(prefix, targetsize, sumlimit):
-        if len(prefix) == targetsize:
-            return sum(primes[i] for i in prefix)
-        else:
-            istart = 0 if (len(prefix) == 0) else (prefix[-1] + 1)
-            for i in range(istart, len(primes)):
-                if primes[i] > sumlimit:
-                    break
-                if all((is_concat_prime(i, j) and is_concat_prime(j, i)) for j in prefix):
-                    prefix.append(i)
-                    result = find_set_sum(
-                        prefix, targetsize, sumlimit - primes[i])
-                    prefix.pop()
-                    if result is not None:
-                        return result
-            return None
-
-    # Tests whether concat(primes[x], primes[y]) is a prime number, with memoization.
-
-    @eulerlib.memoize
-    def is_concat_prime(x, y):
-        return is_prime(int(str(primes[x]) + str(primes[y])))
-
-    # Tests whether the given integer is prime. The implementation performs trial division,
-    # first using the list of primes named 'primes', then switching to simple incrementation.
-    # This requires the last number in 'primes' (if any) to be an odd number.
-
-    def is_prime(x):
-        if x < 0:
-            raise ValueError()
-        elif x in (0, 1):
-            return False
-        else:
-            end = eulerlib.sqrt(x)
-            for p in primes:
-                if p > end:
-                    break
-                if x % p == 0:
-                    return False
-            for i in range(primes[-1] + 2, end + 1, 2):
-                if x % i == 0:
-                    return False
-            return True
-
-    sumlimit = PRIME_LIMIT
-    while True:
-        setsum = find_set_sum([], 5, sumlimit - 1)
-        if setsum is None:  # No smaller sum found
-            return str(sumlimit)
-        sumlimit = setsum
+def getShareDigits(a, b: list):
+    la = sorted(set(int(str(x)[-2:]) for x in a))
+    lb = sorted(set(filter(lambda x: len(str(x)) == 2,
+                           list(int(str(x)[:2]) for x in b))))
+    return list(set(la) & set(lb))
 
 
-if __name__ == "__main__":
-    print(compute())
+# print(getShareDigits(l3, l5))
+# print(getShareDigits(l4, l3))
+# print(getShareDigits(l5, l4))
+s35 = getShareDigits(l3, l5)
+s43 = getShareDigits(l4, l3)
+s54 = getShareDigits(l5, l4)
+
+
+def combin(s1, s2, d1: list):
+    ret = []
+    for i in s1:
+        for j in s2:
+            n = int(str(i)+str(j))
+            if n in d1:
+                ret.append(n)
+    return ret
+
+
+print(s43)
+print(s35)
+print(combin(s43, s35, l3))
+
+
+# def compute(pool):
+#     for a in pool:
+#         selected = []
+#         selected.append(a.belong)
+#         for b in pool:
+#             if isMatch(a, b) and b.belong not in selected:
+#                 selected.append(b.belong)
+#                 for c in pool:
+#                     if isMatch(b, c) and c.belong not in selected:
+#                         selected.append(c.belong)
+#                         print(a, b, c)
+#                         for d in pool:
+#                             if isMatch(c, d) and d.belong not in selected:
+#                                 selected.append(d.belong)
+#                                 print(a, b, c, d)
+#                                 for e in pool:
+#                                     if isMatch(d, e) and e.belong not in selected:
+#                                         selected.append(e.belong)
+#                                         print(a, b, c, d, e)
+#                                         for f in pool:
+#                                             if isMatch(e, f) and isMatch(f, a) and f.belong not in selected:
+#                                                 selected.append(f.belong)
+#                                                 print(a, b, c, d, e, f)
+#                                                 return
